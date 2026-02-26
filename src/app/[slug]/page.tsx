@@ -26,7 +26,7 @@ export default async function PostPage({
     options,
   );
   const postImageUrl = post.heroImage
-    ? urlFor(post.heroImage)?.width(1920).height(1280).url()
+    ? urlFor(post.heroImage)?.width(1920).height(1280).format("webp").url()
     : null;
 
   const solution = post.solutionSections;
@@ -41,7 +41,9 @@ export default async function PostPage({
       </Link>
 
       <div className="prose">
-        <p>{new Date(post.publishedAt).toLocaleDateString()}</p>
+        <p className="opacity-60">
+          {new Date(post.publishedAt).toLocaleDateString()}
+        </p>
         {Array.isArray(post.body) && <PortableText value={post.body} />}
       </div>
 
@@ -85,7 +87,7 @@ export default async function PostPage({
         />
       </section>
 
-      <section className="mt-12 ">
+      <section className="mt-12 max-sm:mt-8">
         <PortableText
           value={post.problem}
           components={{
@@ -97,7 +99,10 @@ export default async function PostPage({
             },
             types: {
               image: ({ value }) => {
-                const imageUrl = urlFor(value)?.width(1920).url();
+                const imageUrl = urlFor(value)
+                  ?.width(1920)
+                  .format("webp")
+                  .url();
                 return imageUrl ? (
                   <img
                     src={imageUrl}
@@ -147,7 +152,7 @@ export default async function PostPage({
                   <img
                     src={imageUrl}
                     alt="Post image"
-                    className="rounded-2xl w-full my-12"
+                    className="rounded-2xl w-full my-12 max-sm:my-6"
                     height={310}
                   />
                 ) : null;
@@ -196,7 +201,7 @@ export default async function PostPage({
                   <img
                     src={imageUrl}
                     alt="Post image"
-                    className="rounded-2xl w-full my-12"
+                    className="rounded-2xl w-full my-12 max-sm:my-7"
                     height={310}
                   />
                 ) : null;
