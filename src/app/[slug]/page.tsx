@@ -37,7 +37,7 @@ export default async function PostPage({
         href="/"
         className="hover:bg-gray-100 hover:text-gray-950 border-2 border-gray-300 rounded-full px-4 py-2 mb-4 w-max"
       >
-        ← Back to posts
+        ← Back to Home
       </Link>
 
       <div className="prose">

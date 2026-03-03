@@ -28,7 +28,7 @@ export default async function IndexPage() {
     <>
       <main className="container mx-auto min-h-dvh max-w-3xl p-8">
         <div className="header flex justify-between">
-          <h1 className="text-4xl font-bold mb-8">Posts</h1>
+          <h1 className="text-4xl font-bold mb-8">Home</h1>
           <span>{LogoIcon.logoIcon}</span>
         </div>
         <div className="my-posts-container flex justify-between">
