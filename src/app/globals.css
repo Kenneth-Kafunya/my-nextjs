@@ -24,3 +24,51 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.prose p {
+  margin-bottom: 1rem;
+}
+
+.prose h4 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-top: 2rem;
+}
+
+.prose ul {
+  list-style: disc;
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose ol {
+  list-style: decimal;
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.swiper-pagination-bullet {
+  background: #8a8a8a !important;
+
+  opacity: 1 !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: #ffffff !important;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  width: 32px !important;
+  height: 32px !important;
+  color: #fff !important;
+  background: rgba(0, 0, 0, 0.5); /* semi-transparent background for contrast */
+  border-radius: 50%;
+  padding: 8px 0 !important;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  color: #000;
+  z-index: 10;
+}

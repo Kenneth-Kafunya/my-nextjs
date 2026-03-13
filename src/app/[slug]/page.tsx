@@ -1,11 +1,11 @@
+import { POST_QUERY } from "@/sanity/queries";
 import { PortableText, type SanityDocument } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url";
 import { client } from "@/sanity/client";
 import Link from "next/link";
 import Footer from "@/components/footer";
-
-const POST_QUERY = `*[_type == "caseStudy" && slug.current == $slug][0]`;
+import Section from "@/components/Section";
 
 const { projectId, dataset } = client.config();
 const urlFor = (source: SanityImageSource) =>
@@ -25,266 +25,118 @@ export default async function PostPage({
     await params,
     options,
   );
+
+  if (!post) {
+    return (
+      <div className="error-container h-dvh flex flex-col justify-center items-center">
+        <h1 className="text-2xl font-bold text-center">
+          Post under maintenance or does not exist.
+        </h1>
+        <Link
+          href="/"
+          className="bg-gray-100 text-gray-950 rounded-full px-4 py-2 my-6 w-max"
+        >
+          Back to Home
+        </Link>
+      </div>
+    );
+  }
+
+  console.log(post.slug);
+
   const postImageUrl = post.heroImage
     ? urlFor(post.heroImage)?.width(1920).height(1280).format("webp").url()
     : null;
 
-  const solution = post.solutionSections;
-
   return (
-    <main className="container mx-auto min-h-screen max-w-3xl p-8 flex flex-col gap-4">
-      <Link
-        href="/"
-        className="hover:bg-gray-100 hover:text-gray-950 border-2 border-gray-300 rounded-full px-4 py-2 mb-4 w-max"
-      >
-        ← Back to Home
-      </Link>
-
-      <div className="prose">
-        <p className="opacity-60">
-          {new Date(post.publishedAt).toLocaleDateString()}
-        </p>
-        {Array.isArray(post.body) && <PortableText value={post.body} />}
-      </div>
-
-      <h1 className="text-4xl font-bold leading-12">{post.title}</h1>
-
-      <p className=" font-light leading-7">{post.subtitle}</p>
-
-      <div className="mb-8 leading-8">
-        <p>
-          <span className="font-semibold">Role: </span>
-          {post.role}
-        </p>
-        <p>
-          <span className="font-semibold">Focus Areas: </span> {post.focusAreas}
-        </p>
-        <p>
-          <span className="font-semibold">Primary Metric: </span>
-          {post.primaryMetric}
-        </p>
-      </div>
-
-      {postImageUrl && (
-        <img
-          src={postImageUrl}
-          alt={post.title}
-          className="rounded-xl w-full"
-          height="310"
-        />
-      )}
-      <section className="mt-12 max-sm:mt-8">
-        <PortableText
-          value={post.context}
-          components={{
-            block: {
-              h2: ({ children }) => (
-                <h2 className="text-2xl font-bold mb-4">{children}</h2>
-              ),
-              normal: ({ children }) => <p className="leading-7">{children}</p>,
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CreativeWork",
+            name: post.title,
+            datePublished: post.publishedAt,
+            keywords: post.tags,
+            author: {
+              "@type": "Person",
+              name: `${post.author}`,
             },
-          }}
-        />
-      </section>
+          }),
+        }}
+      />
+      <main className="container mx-auto min-h-screen max-w-3xl p-8 flex flex-col gap-2">
+        <Link
+          href="/"
+          className="hover:bg-gray-100 hover:text-gray-950 border-2 border-gray-300 rounded-full px-4 py-2 mb-4 w-max"
+        >
+          ← Back to Home
+        </Link>
 
-      <section className="mt-12 max-sm:mt-8">
-        <PortableText
-          value={post.problem}
-          components={{
-            block: {
-              h2: ({ children }) => (
-                <h2 className="text-2xl font-bold mb-4">{children}</h2>
-              ),
-              normal: ({ children }) => <p className="leading-7">{children}</p>,
-            },
-            types: {
-              image: ({ value }) => {
-                const imageUrl = urlFor(value)
-                  ?.width(1920)
-                  .format("webp")
-                  .url();
-                return imageUrl ? (
-                  <img
-                    src={imageUrl}
-                    alt="Post image"
-                    className=" rounded-xl w-full"
-                    height={310}
-                  />
-                ) : null;
-              },
-            },
-          }}
-        />
-      </section>
+        <div className="prose">
+          <p className="opacity-60">
+            {new Date(post.publishedAt).toLocaleDateString()}
+          </p>
+          {Array.isArray(post.body) && <PortableText value={post.body} />}
+        </div>
 
-      <section className="mt-6 max-sm:mt-4">
-        <PortableText
-          value={post.research}
-          components={{
-            block: {
-              h2: ({ children }) => (
-                <h2 className="text-2xl font-bold mb-4">{children}</h2>
-              ),
-              h4: ({ children }) => (
-                <h4 className="text-lg font-semibold my-2 last-of-type:mt-7">
-                  {children}
-                </h4>
-              ),
-              normal: ({ children }) => (
-                <p className="leading-7 mb-4">{children}</p>
-              ),
-            },
-            list: {
-              bullet: ({ children }) => (
-                <ul className="list-disc pl-8 space-y-2">{children}</ul>
-              ),
-            },
-            listItem: {
-              bullet: ({ children }) => <li>{children}</li>,
-            },
-            types: {
-              image: ({ value }) => {
-                const imageUrl = urlFor(value)
-                  ?.width(1920)
-                  .format("webp")
-                  .url();
-                return imageUrl ? (
-                  <img
-                    src={imageUrl}
-                    alt="Post image"
-                    className="rounded-2xl w-full my-12 max-sm:my-6"
-                    height={310}
-                  />
-                ) : null;
-              },
-            },
-          }}
-        />
-      </section>
+        <h1 className="text-4xl font-bold leading-12">{post.title}</h1>
+        <span>
+          <a
+            href={post.authorWebsite}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-400 hover:underline cursor-pointer"
+          >
+            By {post.author}
+          </a>
+        </span>
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 my-6 ">
+          {post.tags?.map((tag: string) => (
+            <span
+              key={tag}
+              className="text-sm bg-gray-800 px-3 py-1 rounded-full"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
 
-      <section className="mt-12 max-sm:mt-8">
-        <PortableText
-          value={post.strategy}
-          components={{
-            block: {
-              h2: ({ children }) => (
-                <h2 className="text-2xl font-bold mb-4">{children}</h2>
-              ),
-              h4: ({ children }) => (
-                <h4 className="text-lg font-semibold my-2 last-of-type:mt-7">
-                  {children}
-                </h4>
-              ),
-              normal: ({ children }) => (
-                <p className="mb-4 leading-7">{children}</p>
-              ),
-            },
-            list: {
-              bullet: ({ children }) => (
-                <ul className="list-disc pl-8 space-y-2">{children}</ul>
-              ),
-              number: ({ children }) => (
-                <ol className="list-decimal pl-8 space-y-2">{children}</ol>
-              ),
-            },
-            listItem: {
-              bullet: ({ children }) => <li>{children}</li>,
-              number: ({ children }) => <li>{children}</li>,
-            },
-            types: {
-              image: ({ value }) => {
-                const imageUrl = urlFor(value)
-                  ?.width(1920)
-                  .format("webp")
-                  .url();
-                return imageUrl ? (
-                  <img
-                    src={imageUrl}
-                    alt="Post image"
-                    className="rounded-2xl w-full my-12 max-sm:my-7"
-                    height={310}
-                  />
-                ) : null;
-              },
-            },
-          }}
-        />
-      </section>
+        <p className=" font-light leading-7">{post.subtitle}</p>
 
-      <section className="mt-5 max-sm:mt-0">
-        {solution.map((section: any, index: number) => (
-          <div key={index} className="mb-12">
-            <h2 className="text-2xl font-bold ">{section.title}</h2>
-            <PortableText
-              value={section.content}
-              components={{
-                list: {
-                  bullet: ({ children }) => (
-                    <ul className="list-disc pl-8 space-y-2 mt-2">
-                      {children}
-                    </ul>
-                  ),
-                  number: ({ children }) => (
-                    <ol className="list-decimal pl-8 space-y-2 mt-2">
-                      {children}
-                    </ol>
-                  ),
-                },
-                listItem: {
-                  bullet: ({ children }) => <li>{children}</li>,
-                  number: ({ children }) => <li>{children}</li>,
-                },
+        <div className="mb-8 leading-8">
+          <p>
+            <span className="font-semibold">Role: </span>
+            {post.role}
+          </p>
+          <p>
+            <span className="font-semibold">Focus Areas: </span>{" "}
+            {post.focusAreas}
+          </p>
+          <p>
+            <span className="font-semibold">Primary Metric: </span>
+            {post.primaryMetric}
+          </p>
+        </div>
 
-                block: {
-                  h4: ({ children }) => (
-                    <h4 className="text-lg font-semibold mt-6">{children}</h4>
-                  ),
-                  normal: ({ children }) => (
-                    <p className="leading-7 mb-4">{children}</p>
-                  ),
-                },
+        {postImageUrl && (
+          <img
+            src={postImageUrl}
+            alt={post.title}
+            className="rounded-xl w-full"
+            height="310"
+          />
+        )}
 
-                types: {
-                  image: ({ value }) => {
-                    const imageUrl = urlFor(value)
-                      ?.width(1920)
-                      .format("webp")
-                      .url();
-                    return imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt="Post image"
-                        className="rounded-2xl w-full my-12 max-sm:my-6"
-                        height={310}
-                      />
-                    ) : null;
-                  },
-                },
-              }}
-            />
-          </div>
+        {/* Sections */}
+        {post.sections?.map((section: any) => (
+          <Section key={section._key} section={section} />
         ))}
-      </section>
 
-      <section className="mt-2 max-sm:mt-0">
-        <PortableText
-          value={post.reflection}
-          components={{
-            block: {
-              h2: ({ children }) => (
-                <h2 className="text-2xl font-bold my-2">{children}</h2>
-              ),
-
-              normal: ({ children }) => (
-                <p className="leading-7 mb-4">{children}</p>
-              ),
-            },
-          }}
-        />
-      </section>
-      <div>
         <Footer />
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

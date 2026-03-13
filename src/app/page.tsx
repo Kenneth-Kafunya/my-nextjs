@@ -31,7 +31,7 @@ export default async function IndexPage() {
           <h1 className="text-4xl font-bold mb-8">Home</h1>
           <span>{LogoIcon.logoIcon}</span>
         </div>
-        <div className="my-posts-container flex justify-between">
+        <div className="my-posts-container flex justify-between ">
           {posts.map((post) => {
             const imageUrl = post.heroImage
               ? urlFor(post.heroImage)?.width(800).url()
