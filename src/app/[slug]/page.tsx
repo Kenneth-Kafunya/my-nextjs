@@ -42,8 +42,6 @@ export default async function PostPage({
     );
   }
 
-  console.log(post.slug);
-
   const postImageUrl = post.heroImage
     ? urlFor(post.heroImage)?.width(1920).height(1280).format("webp").url()
     : null;
@@ -66,6 +64,7 @@ export default async function PostPage({
           }),
         }}
       />
+
       <main className="container mx-auto min-h-screen max-w-3xl p-8 flex flex-col gap-2">
         <Link
           href="/"
@@ -111,6 +110,48 @@ export default async function PostPage({
             <span className="font-semibold">Role: </span>
             {post.role}
           </p>
+
+          {post.collaborators?.length > 0 && (
+            <div>
+              <span className="font-semibold">Collaborators: </span>
+              {post.collaborators.map(
+                (
+                  c: {
+                    person: {
+                      name: string;
+                      portfolio?: string;
+                      linkedin?: string;
+                    };
+                    role?: string;
+                  },
+                  i: number,
+                ) => {
+                  const url = c.person.portfolio || c.person.linkedin;
+                  const nameWithRole = c.role
+                    ? `${c.person.name} (${c.role})`
+                    : c.person.name;
+                  return (
+                    <span key={c.person.name}>
+                      {url ? (
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          {nameWithRole}
+                        </a>
+                      ) : (
+                        <span>{nameWithRole}</span>
+                      )}
+                      {i < post.collaborators.length - 1 && ", "}
+                    </span>
+                  );
+                },
+              )}
+            </div>
+          )}
+
           <p>
             <span className="font-semibold">Focus Areas: </span>{" "}
             {post.focusAreas}

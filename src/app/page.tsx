@@ -26,25 +26,25 @@ export default async function IndexPage() {
 
   return (
     <>
-      <main className="container mx-auto min-h-dvh max-w-3xl p-8">
+      <main className="container mx-auto min-h-dvh max-w-3xl p-8 flex flex-col gap-6 justify-center">
         <div className="header flex justify-between">
           <h1 className="text-4xl font-bold mb-8">Home</h1>
           <span>{LogoIcon.logoIcon}</span>
         </div>
-        <div className="my-posts-container flex justify-between ">
+        <div className="my-posts-container grid grid-cols-2 justify-items-start gap-6 max-sm:flex-col max-sm:w-[80%] max-sm:gap-6 max-sm:justify-center">
           {posts.map((post) => {
             const imageUrl = post.heroImage
-              ? urlFor(post.heroImage)?.width(800).url()
+              ? urlFor(post.heroImage)?.width(800).height(550).url()
               : null;
 
             return (
-              <div key={post._id} className="mb-6 w-1/2 max-sm:w-full">
+              <div key={post._id} className="mb-6 w-75 ">
                 <Link href={`/${post.slug.current}`}>
                   {imageUrl && (
                     <img
                       src={imageUrl}
                       alt={post.title}
-                      className="rounded-t-lg w-full mb-2"
+                      className="rounded-t-2xl w-full"
                     />
                   )}
                 </Link>

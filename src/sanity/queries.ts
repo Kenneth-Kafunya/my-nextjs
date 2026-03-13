@@ -5,6 +5,16 @@ export const POST_QUERY = `
   tags,
   author,
   authorWebsite,
+  collaborators[]{
+    role,
+    person->{
+      name,
+      photo,
+      portfolio,
+      linkedin
+    }
+  },
+
   heroImage,
   subtitle,
   role,
