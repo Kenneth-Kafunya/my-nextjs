@@ -20,9 +20,10 @@ export default async function PostPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
   const post = await client.fetch<SanityDocument>(
     POST_QUERY,
-    await params,
+    { slug },
     options,
   );
 
@@ -41,6 +42,27 @@ export default async function PostPage({
       </div>
     );
   }
+
+  // Fetch all posts to determine previous/next (sorted by slug ascending)
+  const allPosts = await client.fetch<SanityDocument[]>(
+    `*[_type == "caseStudy"] | order(slug.current asc)`,
+    {},
+    options,
+  );
+
+  // Debug: Log posts to check if they're fetched and sorted
+  console.log(
+    "All posts:",
+    allPosts.map((p) => p.slug?.current),
+  );
+
+  // Find current post index
+  const currentIndex = allPosts.findIndex((p) => p.slug?.current === slug);
+  const previousPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+  const nextPost =
+    currentIndex >= 0 && currentIndex < allPosts.length - 1
+      ? allPosts[currentIndex + 1]
+      : null;
 
   const postImageUrl = post.heroImage
     ? urlFor(post.heroImage)?.width(1920).height(1280).format("webp").url()
@@ -66,6 +88,7 @@ export default async function PostPage({
       />
 
       <main className="container mx-auto min-h-screen max-w-3xl p-8 flex flex-col gap-2">
+        {/* Back to Home Link */}
         <Link
           href="/"
           className="hover:bg-gray-100 hover:text-gray-950 border-2 border-gray-300 rounded-full px-4 py-2 mb-4 w-max"
@@ -73,6 +96,7 @@ export default async function PostPage({
           ← Back to Home
         </Link>
 
+        {/* Post Metadata */}
         <div className="prose">
           <p className="opacity-60">
             {new Date(post.publishedAt).toLocaleDateString()}
@@ -91,6 +115,7 @@ export default async function PostPage({
             By {post.author}
           </a>
         </span>
+
         {/* Tags */}
         <div className="flex flex-wrap gap-2 my-6 ">
           {post.tags?.map((tag: string) => (
@@ -102,9 +127,10 @@ export default async function PostPage({
             </span>
           ))}
         </div>
-
+        {/* Post Subtitle */}
         <p className=" font-light leading-7">{post.subtitle}</p>
 
+        {/* Role, Collaborators, Focus Areas, Primary Metric */}
         <div className="mb-8 leading-8">
           <p>
             <span className="font-semibold">Role: </span>
@@ -162,6 +188,7 @@ export default async function PostPage({
           </p>
         </div>
 
+        {/* Hero Image */}
         {postImageUrl && (
           <img
             src={postImageUrl}
@@ -175,6 +202,26 @@ export default async function PostPage({
         {post.sections?.map((section: any) => (
           <Section key={section._key} section={section} />
         ))}
+
+        {/* Project Navigation - conditionally render previous and next */}
+        <div className="flex justify-center mb-6">
+          {previousPost && (
+            <Link
+              href={`/${previousPost.slug.current}`}
+              className="border-gray-100 border-2 text-gray-100 rounded-full px-4 py-2 hover:border-0 hover:text-gray-950 hover:bg-gray-200"
+            >
+              ← Previous Project
+            </Link>
+          )}
+          {nextPost && (
+            <Link
+              href={`/${nextPost.slug.current}`}
+              className="bg-gray-100 text-gray-950 rounded-full px-4 py-2 hover:bg-gray-200"
+            >
+              Next Project →
+            </Link>
+          )}
+        </div>
 
         <Footer />
       </main>

@@ -3,6 +3,7 @@ export const POST_QUERY = `
   title,
   publishedAt,
   tags,
+  slug,
   author,
   authorWebsite,
   collaborators[]{

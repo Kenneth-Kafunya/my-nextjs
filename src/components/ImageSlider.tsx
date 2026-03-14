@@ -19,9 +19,9 @@ export default function ImageSlider({ images }: any) {
         {images.map((img: any, i: number) => (
           <SwiperSlide key={i}>
             <img
-              src={`${img.asset.url}?fm=webp&w=1920`}
+              src={`${img.asset.url}?fm=webp&w=1600&fit=max&h=900`}
               alt={img.caption || ""}
-              className="rounded-lg"
+              className="rounded-lg mx-auto max-h-125 object-cover"
             />
 
             {img.caption && (

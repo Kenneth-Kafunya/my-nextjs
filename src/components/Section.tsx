@@ -7,9 +7,9 @@ export default function Section({ section }: any) {
       image: ({ value }: any) => (
         <figure className="my-8 max-sm:my-6">
           <img
-            src={`${value.asset.url}?fm=webp&w=1920`}
+            src={`${value.asset.url}?fm=webp&w=1600&fit=max&h=900`}
             alt={value.caption || ""}
-            className="rounded-lg"
+            className="rounded-lg mx-auto max-h-125 object-cover"
           />
           {value.caption && (
             <figcaption className="text-sm text-gray-400 mt-2">
