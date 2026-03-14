@@ -45,7 +45,7 @@ export default async function PostPage({
 
   // Fetch all posts to determine previous/next (sorted by slug ascending)
   const allPosts = await client.fetch<SanityDocument[]>(
-    `*[_type == "caseStudy"] | order(slug.current asc)`,
+    `*[_type == "caseStudy"] | order(slug.current desc)`,
     {},
     options,
   );
