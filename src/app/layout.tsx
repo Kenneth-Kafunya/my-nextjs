@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Space_Grotesk, DM_Sans } from "next/font/google";
@@ -7,7 +6,7 @@ import { Space_Grotesk, DM_Sans } from "next/font/google";
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["500", "600", "700"], // pick the weights you actually use
+  weight: ["500", "600", "700"],
 });
 
 const dmSans = DM_Sans({

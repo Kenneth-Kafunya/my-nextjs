@@ -1,21 +1,20 @@
 import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
-import imageUrlBuilder from "@sanity/image-url";
+import { createImageUrlBuilder } from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url";
-import { LogoIcon } from "@/components/IconMap";
-
 import { client } from "@/sanity/client";
 import Footer from "@/components/footer";
+import EmailLink from "@/components/EmailLink";
 
 const POSTS_QUERY = `*[
   _type == "caseStudy"
   && defined(slug.current)
-]|order(publishedAt desc)[0...12]{_id, title, slug, heroImage, publishedAt, excerpt}`;
+]|order(publishedAt desc)[0...12]{_id, title, slug, heroImage, publishedAt, subtitle,tags}`;
 
 const { projectId, dataset } = client.config();
 const urlFor = (source: SanityImageSource) =>
   projectId && dataset
-    ? imageUrlBuilder({ projectId, dataset }).image(source)
+    ? createImageUrlBuilder({ projectId, dataset }).image(source)
     : null;
 
 const options = { next: { revalidate: 30 } };
@@ -46,12 +45,12 @@ export default async function IndexPage() {
             Kenneth Kafunya
           </Link>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <a
-              href="#work"
+            <EmailLink
+              email="kennethkafunya@gmail.com"
               className="transition-colors py-2 px-3 border-2 rounded-full hover:text-foreground"
             >
-              Let's Work
-            </a>
+              Contact me
+            </EmailLink>
           </div>
         </header>
 
@@ -88,9 +87,9 @@ export default async function IndexPage() {
         {featured && (
           <Link
             href={`/${featured.slug.current}`}
-            className="group grid gap-8 overflow-hidden rounded-[2rem] border border-border bg-surface shadow-card md:grid-cols-2"
+            className="group grid gap-8 overflow-hidden rounded-4xl border border-border bg-surface shadow-card md:grid-cols-2"
           >
-            <div className="aspect-[4/3] overflow-hidden md:aspect-auto md:h-full">
+            <div className="aspect-4/3 overflow-hidden md:aspect-auto md:h-full">
               {featured.heroImage && (
                 <img
                   src={urlFor(featured.heroImage)
@@ -111,11 +110,26 @@ export default async function IndexPage() {
               <h3 className="text-3xl font-bold md:text-4xl">
                 {featured.title}
               </h3>
-              {featured.excerpt && (
+
+              {featured.subtitle && (
                 <p className="text-base leading-relaxed text-muted-foreground">
-                  {featured.excerpt}
+                  {featured.subtitle}
                 </p>
               )}
+
+              {featured.tags?.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {featured.tags.map((tag: string) => (
+                    <span
+                      key={tag}
+                      className="text-xs bg-gray-800 px-3 py-1 rounded-full text-muted-foreground"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <span>{dateFmt(featured.publishedAt)}</span>
                 <span className="h-px w-8 bg-border" />
@@ -133,9 +147,9 @@ export default async function IndexPage() {
             <Link
               key={post._id}
               href={`/${post.slug.current}`}
-              className="group grid gap-8 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] transition-transform duration-300 hover:-translate-y-1 md:grid-cols-2"
+              className="group grid gap-8 overflow-hidden rounded-3xl border border-white/10 bg-white/3 transition-transform duration-300 hover:-translate-y-1 md:grid-cols-2"
             >
-              <div className="aspect-[4/3] overflow-hidden md:aspect-auto md:h-full">
+              <div className="aspect-4/3 overflow-hidden md:aspect-auto md:h-full">
                 {post.heroImage && (
                   <img
                     src={urlFor(post.heroImage)!
@@ -153,9 +167,9 @@ export default async function IndexPage() {
                   {dateFmt(post.publishedAt)}
                 </p>
                 <h3 className="text-2xl font-semibold">{post.title}</h3>
-                {post.excerpt && (
+                {post.subtitle && (
                   <p className="text-sm leading-relaxed text-white/60">
-                    {post.excerpt}
+                    {post.subtitle}
                   </p>
                 )}
                 {post.tags?.length > 0 && (

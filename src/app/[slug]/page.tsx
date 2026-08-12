@@ -50,11 +50,10 @@ export default async function PostPage({
     options,
   );
 
-  // Debug: Log posts to check if they're fetched and sorted
-  console.log(
+  /* console.log(
     "All posts:",
-    allPosts.map((p) => p.slug?.current),
-  );
+    allPosts.map((p) => p.slug?.current), 
+  );*/
 
   // Find current post index
   const currentIndex = allPosts.findIndex((p) => p.slug?.current === slug);
@@ -208,7 +207,7 @@ export default async function PostPage({
           {previousPost && (
             <Link
               href={`/${previousPost.slug.current}`}
-              className="border-gray-100 border-2 text-gray-100 rounded-full px-4 py-2 hover:border-0 hover:text-gray-950 hover:bg-gray-200  max-sm:text-center max-sm:justify-center max-sm:py-3 max-sm:w-[200px]"
+              className="border-gray-100 border-2 text-gray-100 rounded-full px-4 py-2 hover:border-0 hover:text-gray-950 hover:bg-gray-200  max-sm:text-center max-sm:justify-center max-sm:py-3 max-sm:w-50"
             >
               ← Previous Project
             </Link>
@@ -216,7 +215,7 @@ export default async function PostPage({
           {nextPost && (
             <Link
               href={`/${nextPost.slug.current}`}
-              className="bg-gray-100 text-gray-950 rounded-full px-4 py-2 hover:bg-gray-200  max-sm:text-center max-sm:justify-center max-sm:py-3 max-sm:w-[200px] "
+              className="bg-gray-100 text-gray-950 rounded-full px-4 py-2 hover:bg-gray-200  max-sm:text-center max-sm:justify-center max-sm:py-3 max-sm:w-50 "
             >
               Next Project →
             </Link>
